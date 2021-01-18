@@ -33,6 +33,7 @@
     - 스프링 컨테이너에게 Bean 을 구성하기 위해 사용하는 설정 값임을 알려줌
 - @SpringBootApplication
     - @EnableAutoConfiguration, @SpringBootConfiguration, @ComponentScan 포함
+
 #### Lombok
 
 - @Getter
@@ -46,8 +47,61 @@
     - Builder Pattern 을 이용한 정적 클래스 생성
 
 2. 스프링 프레임워크의 DI란
+
+- Dependency Injection ( 의존성 주입 )
+    - 객체 내부에서 다른 객체를 생성 하는 것이 아니라<br>
+      객체 외부에서 파라미터를 통해 객체를 받는 것
+
+```java
+class A {
+    public A(B b) {
+        // 생성자를 통한 DI
+    }
+
+    public void setB(B b) {
+        // 메서드를 통한 DI
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        A a = new A(new B());
+        a.setB(new B());
+        // 이런 방법으로 외부에서 의존성 주입 해줌
+    }
+}
+```
+
+- 스프링의 DI
+    - 스프링은 빈 컨테이너<br>
+      빈 컨테이너에서 같은 빈 컨테이너에 등록되어있는 객체가<br>
+      필요한 객체를 DI 받을 때 해당 타입에 맞는 객체 ( 추가로 이름까지 ) 를 찾아<br>
+      주입해주는 것
+
+```java
+class A {
+    public A(B b) {
+        // 생성자를 통한 DI
+    }
+
+    public void setB(B b) {
+        // 메서드를 통한 DI
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+       // A 와 B 가 모두 빈 컨테이너에 등록 되어있다면
+        ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+        A a = context.getBean("a");
+        // 빈 컨테이너에서 꺼내온 A는 이미 B를 DI 받아 가지고 있음
+    }
+}
+```
+
 3. 네이버 오픈 API 에 애플리케이션 등록
 4. 샘플 소스를 개발 툴 IntelliJ 에서 실행해보고 잘 되는지 확인
 5. 샘플 소스의 응답 데이터 필드
 6. 테스트 코드 작성
 7. 영화 외 다른 검색 서비스 추가
+    - News 검색 서비스 추가
