@@ -15,8 +15,9 @@ public class MovieService {
         this.movieRepository = movieRepositoryImpl;
     }
 
-    public List<Movie> query(String query) {
+//    @Cacheable(value = "cache::movies")
+    public List<Movie> search(String query) {
         MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(query));
-        return movieGroup.getListOrderRating();
+        return movieGroup.getMovieGroupOrderRating().getList();
     }
 }

@@ -2,6 +2,7 @@ package com.example.monstudy.domain.movie;
 
 import com.example.monstudy.config.NaverProperties;
 import com.example.monstudy.web.dto.ResponseMovieDto;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,8 @@ public class MovieRepositoryImpl implements MovieRepository {
                 .map(m -> Movie.builder()
                         .title(m.getTitle())
                         .link(m.getLink())
+                        .actor(m.getActor())
+                        .director(m.getDirector())
                         .userRating(m.getUserRating())
                         .build())
                 .collect(Collectors.toList())

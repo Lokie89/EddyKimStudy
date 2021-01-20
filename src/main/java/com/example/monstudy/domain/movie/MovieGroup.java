@@ -14,10 +14,15 @@ public class MovieGroup {
         this.list = list;
     }
 
-    public List<Movie> getListOrderRating() {
-        return list.stream()
-                .filter(b->b.getUserRating()>0)
+    public MovieGroup getMovieGroupOrderRating() {
+        return new MovieGroup(list.stream()
                 .sorted(Comparator.comparing(Movie::getUserRating).reversed())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+    }
+
+    public MovieGroup getMovieGroupFilterZero() {
+        return new MovieGroup(list.stream()
+                .filter(m -> m.getUserRating() > 0)
+                .collect(Collectors.toList()));
     }
 }
