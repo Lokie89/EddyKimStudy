@@ -16,22 +16,20 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     private RestTemplate restTemplate;
     private NaverProperties naverProperties;
+    private HttpHeaders naverAPIHeaders;
 
     public NewsRepositoryImpl(RestTemplate restTemplate,
-                              NaverProperties naverProperties) {
+                              NaverProperties naverProperties,
+                              HttpHeaders naverAPIHeaders) {
         this.restTemplate = restTemplate;
         this.naverProperties = naverProperties;
+        this.naverAPIHeaders = naverAPIHeaders;
     }
 
     @Override
     public List<News> findByQuery(String query) {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Naver-Client-Id", naverProperties.getClientId());
-        httpHeaders.add("X-Naver-Client-Secret", naverProperties.getClientSecret());
-
         String url = naverProperties.getNewsUrl() + "?query=" + query;
-        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(httpHeaders), ResponseNewsDto.class)
+        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(naverAPIHeaders), ResponseNewsDto.class)
                 .getBody()
                 .getItems()
                 .stream()

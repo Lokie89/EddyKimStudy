@@ -17,23 +17,21 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     private RestTemplate restTemplate;
     private NaverProperties naverProperties;
+    private HttpHeaders naverAPIHeaders;
 
     public MovieRepositoryImpl(RestTemplate restTemplate,
-                               NaverProperties naverProperties) {
+                               NaverProperties naverProperties,
+                               HttpHeaders naverAPIHeaders) {
         this.restTemplate = restTemplate;
         this.naverProperties = naverProperties;
+        this.naverAPIHeaders = naverAPIHeaders;
     }
 
     @Override
     public List<Movie> findByQuery(String query) {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Naver-Client-Id", naverProperties.getClientId());
-        httpHeaders.add("X-Naver-Client-Secret", naverProperties.getClientSecret());
-
         String url = naverProperties.getMovieUrl() + "?query=" + query;
 
-        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(httpHeaders), ResponseMovieDto.class)
+        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(naverAPIHeaders), ResponseMovieDto.class)
                 .getBody()
                 .getItems()
                 .stream()
