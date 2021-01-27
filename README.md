@@ -91,7 +91,7 @@ class A {
 
 class Main {
     public static void main(String[] args) {
-       // A 와 B 가 모두 빈 컨테이너에 등록 되어있다면
+        // A 와 B 가 모두 빈 컨테이너에 등록 되어있다면
         ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
         A a = context.getBean("a");
         // 빈 컨테이너에서 꺼내온 A는 이미 B를 DI 받아 가지고 있음
@@ -105,8 +105,9 @@ class Main {
 6. 테스트 코드 작성
 7. 영화 외 다른 검색 서비스 추가
     - News 검색 서비스 추가
-    
+
 ### 2주차 과제
+
 1. 임베디드 톰캣의 쓰레드 풀 사이즈를 변경해보세요.
     - application.properties `-Dserver.tomcat.max-threads=400` 추가
 2. 샘플 소스 영화 검색 API 응답 데이터 필드 누락 수정
@@ -119,8 +120,20 @@ class Main {
 6. 영화 평점 순 정렬 단위 테스트
     - shouldSortedInOrderOfGrade()
 7. 영화 검색시 평점 0인 데이터 제외 단위 테스트 (@SpringBootTest 사용하지 말 것)
-   - shouldFilterZeroOfGrade()
+    - shouldFilterZeroOfGrade()
 8. 네이버 오픈 API 인증 실패일 경우 예외 처리
 9. 검색들이 사용하는 검색 기능 로직 중 RestTemplate 을 공통 사용 부분 리팩토링
 10. RestTemplate Bean 설정값 모두 application.yml 파일로 분리
 11. FeignClient 사용해 볼 것
+
+### 3주차 과제
+
+1. 사용자에 의한 키워드 검색 시 네이버 Open API 영화 검색 결과를 <br>
+   애플리케이션 내부에 정의한 자료 구조에 저장해놓기 ( 캐싱 )
+2. 사용자에 의한 키워드 검색 시 특정 키워드에 해당하는 데이터가 자료구조에 이미 저장되어있다면,<br>
+   네이버 오픈 API 호출하지 않고, 저장된 (캐싱된) 데이터를 사용하도록 구현<br>
+   (없으면 네이버 Open API 호출 후 자료구조 저장)
+3. 관리자에 의한 캐시 데이터를 강제로 업데이트(갱신)하는 RestController API 만들기<br>
+   (RestAPI 의 갱신해주는 API 를 호출하면, 네이버 오픈 API 를 호출 후 캐시에 저장)
+4. (선택) 자료구조에 저장한 데이터는 10분이 지나면 서버에서 자동으로 지우기
+5. Redis 설치 후 이것 저것 해보기
