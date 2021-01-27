@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -24,5 +25,9 @@ public class MovieGroup {
         return new MovieGroup(list.stream()
                 .filter(m -> m.getUserRating() > 0)
                 .collect(Collectors.toList()));
+    }
+
+    public Optional<Movie> getHighestRatingMovie(){
+        return getMovieGroupOrderRating().getList().stream().findFirst();
     }
 }

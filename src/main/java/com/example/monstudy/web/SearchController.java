@@ -37,4 +37,9 @@ public class SearchController {
     public List<News> getNewsByQuery(@RequestParam(name = "q") String query) {
         return newsService.query(query);
     }
+
+    @GetMapping("/recommend-movie")
+    public Movie getRecommendMovieByQuery(@RequestParam(name = "q") String query) {
+        return movieService.recommendTodayMovie(query);
+    }
 }
