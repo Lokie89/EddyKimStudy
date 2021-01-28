@@ -5,18 +5,21 @@ import com.example.monstudy.domain.movie.MovieGroup;
 import com.example.monstudy.domain.movie.MovieRepository;
 import com.example.monstudy.exception.ClientNoContentRuntimeException;
 import com.example.monstudy.web.dto.Search;
+import com.example.monstudy.web.dto.UpdateSearchResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class MovieService {
     private MovieRepository movieRepository;
 
-    private Map<Search, MovieGroup> searchCache = new HashMap<>();
+    private final Map<Search, MovieGroup> searchCache = new HashMap<>();
 
     public MovieService(MovieRepository movieRepositoryImpl) {
         this.movieRepository = movieRepositoryImpl;
@@ -44,5 +47,25 @@ public class MovieService {
         MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(query));
         searchCache.put(search, movieGroup);
         return movieGroup.getHighestRatingMovie().orElseThrow(ClientNoContentRuntimeException::new);
+    }
+
+    public List<UpdateSearchResponseDto> updateAllSearch() {
+        List<UpdateSearchResponseDto> updateSearchResponseDtos = new ArrayList<>();
+        for (Search search : searchCache.keySet()) {
+//            searchCache.remove(search);
+            String keyword = search.getKeyword();
+
+            MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(keyword));
+            searchCache.put(search, movieGroup);
+            List<Movie> searchMovieList = movieGroup.getMovieGroupOrderRating().getList();
+
+            updateSearchResponseDtos.add(
+                    UpdateSearchResponseDto.builder()
+                            .updateCount(searchMovieList.size())
+                            .keyword(keyword)
+                            .build()
+            );
+        }
+        return updateSearchResponseDtos;
     }
 }
