@@ -39,7 +39,7 @@ public class MovieService {
                 System.out.println("삭제하고 재조회");
                 return searchRepositoryAndPutCache(search);
             }
-            System.out.println("캐시에서 꺼냄");
+            System.out.println("캐시에서 꺼냄!");
             return searchCache.get(search).getMovieGroupOrderRating().getList();
         }
         return searchRepositoryAndPutCache(search);
