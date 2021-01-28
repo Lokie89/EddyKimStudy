@@ -18,6 +18,7 @@ public class MovieGroup {
     public MovieGroup getMovieGroupOrderRating() {
         return new MovieGroup(list.stream()
                 .sorted(Comparator.comparing(Movie::getUserRating).reversed())
+                .skip(1)
                 .collect(Collectors.toList()));
     }
 

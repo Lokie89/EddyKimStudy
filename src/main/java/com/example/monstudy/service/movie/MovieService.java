@@ -3,6 +3,7 @@ package com.example.monstudy.service.movie;
 import com.example.monstudy.domain.movie.Movie;
 import com.example.monstudy.domain.movie.MovieGroup;
 import com.example.monstudy.domain.movie.MovieRepository;
+import com.example.monstudy.exception.ClientNoContentRuntimeException;
 import com.example.monstudy.web.dto.Search;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,13 @@ public class MovieService {
 
     public Movie recommendTodayMovie(String query) {
         Search search = new Search(query, LocalDateTime.now());
-        Movie defaultMovie = Movie.builder().title("기본영화").link("https://").userRating(9.9f).build();
+//        Movie defaultMovie = Movie.builder().title("기본영화").link("https://").userRating(9.9f).build();
         if (searchCache.containsKey(search)) {
             System.out.println("캐시에서 꺼냄");
-            return searchCache.get(search).getHighestRatingMovie().orElse(defaultMovie);
+            return searchCache.get(search).getHighestRatingMovie().orElseThrow(ClientNoContentRuntimeException::new);
         }
         MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(query));
         searchCache.put(search, movieGroup);
-        return movieGroup.getHighestRatingMovie().orElse(defaultMovie);
+        return movieGroup.getHighestRatingMovie().orElseThrow(ClientNoContentRuntimeException::new);
     }
 }
