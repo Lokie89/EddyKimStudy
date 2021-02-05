@@ -4,9 +4,14 @@ import com.example.monstudy.domain.movie.Movie;
 import com.example.monstudy.domain.movie.MovieGroup;
 import com.example.monstudy.domain.movie.MovieRepository;
 import com.example.monstudy.exception.ClientNoContentRuntimeException;
+import com.example.monstudy.provider.cache.LookAsideCaching;
 import com.example.monstudy.web.dto.Search;
 import com.example.monstudy.web.dto.UpdateSearchResponseDto;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,8 +29,9 @@ public class MovieService {
         this.movieRepository = movieRepositoryImpl;
     }
 
-    //    @Cacheable(value = "cache::movies")
-    public List<Movie> search(String query) {
+//    @LookAsideCaching(value = "cache::search-movies", key = "query")
+    @Cacheable(value = "cache::movie::query")
+    public List<Movie> search(final String query) {
         Search search = new Search(query, LocalDateTime.now());
         if (searchCache.containsKey(search)) {
             Search cachedSearch = null;
@@ -51,6 +57,7 @@ public class MovieService {
         return movieGroup.getMovieGroupOrderRating().getList();
     }
 
+    @LookAsideCaching(value = "cache::recommend-movie")
     public Movie recommendTodayMovie(String query) {
         Search search = new Search(query, LocalDateTime.now());
 //        Movie defaultMovie = Movie.builder().title("기본영화").link("https://").userRating(9.9f).build();
@@ -77,5 +84,11 @@ public class MovieService {
             );
         }
         return updateSearchResponseDtos;
+    }
+
+    @CacheEvict(value = "cache::movie::query", key = "#query")
+    @DeleteMapping(value = "/movie-query")
+    public Boolean clearMovieQueryCache(@RequestParam(name = "query") String query){
+        return true;
     }
 }
